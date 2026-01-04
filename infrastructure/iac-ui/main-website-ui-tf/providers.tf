@@ -7,6 +7,9 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  # Backend configuration moved to backend.tf for better organization
+  # This allows easier management and switching between backends
 }
 
 provider "aws" {
