@@ -3,7 +3,8 @@ resource "aws_s3_bucket" "vector_store" {
   bucket = var.s3_bucket_name
 
   tags = merge(local.common_tags, {
-    Name = "${var.project_name}-vector-store"
+    Name        = "${var.organization}-${var.project_name}-vector-store"
+    Description = "Vector store for health insurance RAG system"
   })
 }
 

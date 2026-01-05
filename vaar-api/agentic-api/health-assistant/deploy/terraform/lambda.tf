@@ -32,42 +32,7 @@ resource "aws_ecr_lifecycle_policy" "lambda_repo_policy" {
   })
 }
 
-# Lambda Function
-resource "aws_lambda_function" "api" {
-  function_name = local.function_name
-  role          = aws_iam_role.lambda_role.arn
-  package_type  = "Image"
-  image_uri     = "${aws_ecr_repository.lambda_repo.repository_url}:latest"
-
-  timeout     = 60
-  memory_size = 1024
-
-  environment {
-    variables = {
-      OPENAI_API_KEY         = var.openai_api_key
-      AWS_REGION             = var.aws_region
-      S3_BUCKET_NAME         = aws_s3_bucket.vector_store.id
-      VECTOR_INDEX_KEY       = "faiss_index/health_insurance.index"
-      ENVIRONMENT            = var.environment
-      LOG_LEVEL              = "INFO"
-      CORS_ORIGINS           = var.cors_origins
-      OPENAI_MODEL           = "gpt-4o-mini"
-      OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
-      TEMPERATURE            = "0.7"
-      MAX_TOKENS             = "1000"
-      CHUNK_SIZE             = "1000"
-      CHUNK_OVERLAP          = "200"
-      TOP_K_RESULTS          = "4"
-    }
-  }
-
-  tags = local.common_tags
-
-  # Prevent deployment before image is pushed
-  lifecycle {
-    ignore_changes = [image_uri]
-  }
-}
+# Lambda function is now defined in docker_build.tf to ensure proper dependencies
 
 # CloudWatch Log Group
 resource "aws_cloudwatch_log_group" "lambda_logs" {

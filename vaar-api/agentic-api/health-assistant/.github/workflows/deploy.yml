@@ -1,0 +1,78 @@
+name: Deploy Health Assistant API
+
+on:
+  push:
+    branches:
+      - developer
+      - main
+    paths:
+      - "vaar-api/agentic-api/health-assistant/**"
+  workflow_dispatch: # Allow manual trigger
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: vaardesigns-health-assistant-prod
+
+jobs:
+  deploy:
+    name: Deploy to AWS Lambda
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push Docker image to ECR
+        working-directory: vaar-api/agentic-api/health-assistant
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+      - name: Update Lambda function with new image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          aws lambda update-function-code \
+            --function-name vaardesigns-health-assistant-prod \
+            --image-uri $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Wait for Lambda update to complete
+        run: |
+          aws lambda wait function-updated \
+            --function-name vaardesigns-health-assistant-prod \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Update Lambda environment variables (if needed)
+        run: |
+          aws lambda update-function-configuration \
+            --function-name vaardesigns-health-assistant-prod \
+            --environment Variables="{OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }},S3_BUCKET_NAME=vaardesigns-health-assistant,ENVIRONMENT=production}" \
+            --region ${{ env.AWS_REGION }}
+
+      - name: Deployment successful
+        run: |
+          echo "✅ Lambda function updated successfully!"
+          echo "🔗 API Gateway URL: https://$(aws apigatewayv2 get-apis --query 'Items[?Name==`vaardesigns-health-assistant-prod-api`].ApiEndpoint' --output text --region ${{ env.AWS_REGION }})"

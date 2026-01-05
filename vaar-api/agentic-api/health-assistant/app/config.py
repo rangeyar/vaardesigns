@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from typing import List
+import os
 
 
 class Settings(BaseSettings):
@@ -13,7 +14,8 @@ class Settings(BaseSettings):
     max_tokens: int = 1000
     
     # AWS Configuration (optional for local development)
-    aws_region: str = "us-east-1"
+    # AWS_REGION is automatically provided by Lambda, fallback to env or default
+    aws_region: str = os.environ.get("AWS_REGION", os.environ.get("AWS_DEFAULT_REGION", "us-east-1"))
     s3_bucket_name: str = "local-bucket"
     vector_index_key: str = "faiss_index/health_insurance.index"
     
