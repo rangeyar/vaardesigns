@@ -1,13 +1,17 @@
 # 📋 Action Required: Move Workflow Files
 
 ## Problem
+
 The GitHub Actions workflow files are currently in the WRONG location:
+
 - ❌ `vaar-api/agentic-api/health-assistant/.github/workflows/`
 
 They need to be at the REPOSITORY ROOT:
+
 - ✅ `.github/workflows/` (at vaardesigns repository root)
 
 ## Why?
+
 GitHub Actions only reads workflows from the repository root `.github/workflows/` folder, just like your UI workflows.
 
 ## Steps to Fix
@@ -15,28 +19,32 @@ GitHub Actions only reads workflows from the repository root `.github/workflows/
 ### Option 1: Using File Explorer (Easiest)
 
 1. **Navigate to your repository root:**
+
    ```
    c:\Users\13124\Desktop\Skills\agentic-ai\main-website-vaar\test-terraform\vaardesigns\
    ```
 
 2. **Check if `.github/workflows/` exists at root level**
+
    - If YES: Great! You already have it (for your UI)
    - If NO: Create the folders
 
 3. **Copy/Move these 2 workflow files:**
-   
+
    **FROM:**
+
    ```
    vaardesigns/vaar-api/agentic-api/health-assistant/.github/workflows/deploy.yml
    vaardesigns/vaar-api/agentic-api/health-assistant/.github/workflows/terraform-deploy.yml
    ```
-   
+
    **TO:**
+
    ```
    vaardesigns/.github/workflows/deploy-health-assistant-api.yml
    vaardesigns/.github/workflows/terraform-deploy-health-assistant.yml
    ```
-   
+
    **Note:** I renamed them to be more descriptive since they're at root level with other workflows
 
 4. **Delete the old workflow folder:**
@@ -67,6 +75,7 @@ Get-ChildItem ".github\workflows\*health-assistant*.yml"
 ## After Moving Files
 
 ### Commit the changes:
+
 ```powershell
 git add .github/workflows/
 git add vaar-api/agentic-api/health-assistant/

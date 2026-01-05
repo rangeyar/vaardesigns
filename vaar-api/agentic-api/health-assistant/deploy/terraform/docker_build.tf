@@ -1,45 +1,18 @@
-# This resource builds and pushes Docker image before Lambda creation
-# NOTE: This is DISABLED for CI/CD - GitHub Actions handles Docker builds
-# For local deployment without Docker Desktop: build manually (see FIRST_DEPLOY.md)
+# Docker Image Build
+# 
+# NOTE: Automated Docker build is DISABLED in this Terraform configuration.
+# 
+# Docker images are built and pushed via GitHub Actions workflows:
+# - .github/workflows/deploy-health-assistant-api.yml (for API code changes)
+# - .github/workflows/terraform-deploy-health-assistant.yml (for infrastructure changes)
+#
+# For manual deployment, see QUICK_START.md for instructions on:
+# 1. Pushing code to GitHub (GitHub Actions builds Docker image)
+# 2. Running terraform apply (uses pre-built image from ECR)
+#
+# Lambda function definition below assumes Docker image already exists in ECR
 
-# Uncomment this block ONLY if you want Terraform to build Docker locally
-/*
-resource "null_resource" "build_and_push_image" {
-  # Trigger rebuild when these files change
-  triggers = {
-    dockerfile_hash = filemd5("${path.module}/../../Dockerfile")
-    requirements    = filemd5("${path.module}/../../requirements.txt")
-    app_code        = sha1(join("", [for f in fileset("${path.module}/../../app", "**/*.py") : filesha1("${path.module}/../../app/${f}")]))
-  }
-
-  # Build and push Docker image
-  provisioner "local-exec" {
-    command     = <<-EOT
-      # Get AWS account ID and region
-      $AWS_ACCOUNT_ID = (aws sts get-caller-identity --query Account --output text)
-      $AWS_REGION = "${var.aws_region}"
-      $ECR_REPO = "${aws_ecr_repository.lambda_repo.repository_url}"
-      
-      Write-Host "Building Docker image..."
-      docker build -t ${local.function_name}:latest ${path.module}/../..
-      
-      Write-Host "Logging into ECR..."
-      aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO
-      
-      Write-Host "Tagging image..."
-      docker tag ${local.function_name}:latest $ECR_REPO:latest
-      
-      Write-Host "Pushing to ECR..."
-      docker push $ECR_REPO:latest
-    EOT
-    interpreter = ["PowerShell", "-Command"]
-  }
-
-  depends_on = [aws_ecr_repository.lambda_repo]
-}
-*/
-
-# Update Lambda function to depend on image being pushed
+# Lambda function configuration
 resource "aws_lambda_function" "api" {
   function_name = local.function_name
   role          = aws_iam_role.lambda_role.arn
@@ -69,14 +42,14 @@ resource "aws_lambda_function" "api" {
 
   tags = local.common_tags
 
-  # Wait for IAM policies to be attached
+  # Wait for IAM policies to be attached before creating Lambda
   depends_on = [
-    # null_resource.build_and_push_image,  # Disabled - image built via GitHub Actions or manual build
     aws_iam_role_policy_attachment.lambda_basic,
     aws_iam_role_policy.lambda_s3_policy
   ]
 
-  # Prevent re-deployment when image updates (handled separately)
+  # Prevent re-deployment when image updates
+  # Image updates are handled by GitHub Actions workflows
   lifecycle {
     ignore_changes = [image_uri]
   }
