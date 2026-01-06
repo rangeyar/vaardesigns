@@ -66,6 +66,12 @@ variable "cors_origins" {
   default     = "https://vaardesigns.com,https://www.vaardesigns.com"
 }
 
+variable "create_healthassistant_subdomain" {
+  description = "Create healthassistant.vaardesigns.com subdomain (in addition to api.vaardesigns.com)"
+  type        = bool
+  default     = false
+}
+
 # Locals
 locals {
   function_name = "${var.organization}-${var.project_name}-${var.environment}"
