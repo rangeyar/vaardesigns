@@ -1,0 +1,9 @@
+# Create a minimal dummy Lambda function
+# This allows Terraform to create infrastructure even without your app image
+
+FROM public.ecr.aws/lambda/python:3.11
+
+# Minimal handler
+RUN echo 'def handler(event, context): return {"statusCode": 200, "body": "Placeholder"}' > /var/task/app.py
+
+CMD ["app.handler"]
