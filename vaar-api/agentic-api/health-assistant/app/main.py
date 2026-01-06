@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Load vector store on startup."""
-    logger.info("Starting application...")
+    logger.info("Starting application.......")
     success = rag_system.load_vector_store()
     if not success:
         logger.warning("Failed to load vector store on startup")
