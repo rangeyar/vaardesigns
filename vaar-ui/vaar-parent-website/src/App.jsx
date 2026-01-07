@@ -1,5 +1,6 @@
 import './App.css'
 import AskArvashu from './components/AskArvashu'
+import HeroSlider from './components/HeroSlider'
 
 function App() {
   console.log('App component rendered')
@@ -22,10 +23,8 @@ function App() {
       </header>
 
       <main className="main-content">
-        <section className="hero">
-          <h2>Welcome to VaarDesigns</h2>
-          <p>Your creative design partner</p>
-        </section>
+        {/* Hero Slider */}
+        <HeroSlider />
       </main>
 
       <footer className="footer">
