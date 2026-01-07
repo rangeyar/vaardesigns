@@ -1,4 +1,5 @@
 import './App.css'
+import AskArvashu from './components/AskArvashu'
 
 function App() {
   console.log('App component rendered')
@@ -30,6 +31,9 @@ function App() {
       <footer className="footer">
         <p>&copy; 2025 VaarDesigns. All rights reserved.</p>
       </footer>
+
+      {/* AI Assistant */}
+      <AskArvashu />
     </>
   )
 }
