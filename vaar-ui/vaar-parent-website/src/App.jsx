@@ -1,10 +1,10 @@
 import './App.css'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import AskArvashu from './components/AskArvashu'
 import HeroSlider from './components/HeroSlider'
+import Products from './components/Products/Products'
 
-function App() {
-  console.log('App component rendered')
-  console.log('Test run')
+function HomePage() {
   return (
     <>
       <header className="header">
@@ -13,8 +13,8 @@ function App() {
             <h1>VaarDesigns</h1>
           </div>
           <nav className="nav">
-            <a href="#home">Home</a>
-            <a href="#products">Products</a>
+            <Link to="/">Home</Link>
+            <Link to="/products">Products</Link>
             <a href="#services">Services</a>
             <a href="#about">About Us</a>
             <a href="#contact">Contact Us</a>
@@ -34,6 +34,19 @@ function App() {
       {/* AI Assistant */}
       <AskArvashu />
     </>
+  )
+}
+
+function App() {
+  console.log('App component rendered')
+  console.log('Test run')
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/products" element={<Products />} />
+      </Routes>
+    </Router>
   )
 }
 
