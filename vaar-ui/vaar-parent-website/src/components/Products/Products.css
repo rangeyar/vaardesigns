@@ -1,65 +1,7 @@
 .products-page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  width: 100%;
   background-color: #0a0a0a;
   color: #ffffff;
-}
-
-/* Header Styles */
-.products-header {
-  background-color: rgba(0, 0, 0, 0.95);
-  padding: 1rem 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.products-header .header-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.products-header .logo h1 {
-  font-size: 1.8rem;
-  font-weight: bold;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.products-header .nav {
-  display: flex;
-  gap: 2rem;
-}
-
-.products-header .nav a {
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 1rem;
-  transition: color 0.3s ease;
-  position: relative;
-}
-
-.products-header .nav a:hover,
-.products-header .nav a.active {
-  color: #667eea;
-}
-
-.products-header .nav a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* Hero Section */
@@ -275,20 +217,6 @@
   transform: translateX(4px);
 }
 
-/* Footer */
-.footer {
-  background-color: rgba(0, 0, 0, 0.95);
-  text-align: center;
-  padding: 2rem;
-  margin-top: 3rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.footer p {
-  color: #808080;
-  font-size: 0.9rem;
-}
-
 /* Responsive Design */
 @media (max-width: 1024px) {
   .mega-menu-content {
@@ -327,25 +255,9 @@
   .products-grid {
     grid-template-columns: 1fr;
   }
-
-  .products-header .nav {
-    gap: 1rem;
-    font-size: 0.9rem;
-  }
 }
 
 @media (max-width: 480px) {
-  .products-header .header-container {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .products-header .nav {
-    width: 100%;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
   .mega-menu-left h2 {
     font-size: 1.2rem;
   }

@@ -88,21 +88,6 @@ const Products = () => {
 
   return (
     <div className="products-page">
-      <header className="products-header">
-        <div className="header-container">
-          <div className="logo">
-            <h1>VaarDesigns</h1>
-          </div>
-          <nav className="nav">
-            <a href="/">Home</a>
-            <a href="/products" className="active">Products</a>
-            <a href="#services">Services</a>
-            <a href="#about">About Us</a>
-            <a href="#contact">Contact Us</a>
-          </nav>
-        </div>
-      </header>
-
       <div className="products-hero">
         <h1>Our Products</h1>
         <p>Discover our comprehensive suite of AI-powered solutions</p>
@@ -143,10 +128,6 @@ const Products = () => {
           </div>
         </div>
       </div>
-
-      <footer className="footer">
-        <p>&copy; 2025 VaarDesigns. All rights reserved.</p>
-      </footer>
     </div>
   )
 }
